@@ -1,0 +1,160 @@
+<HTML>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "all" } }
+});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<H1>Part 5: Planetoids with torque!</H1>
+
+<p>In this lab we will make the planetoids game more realistic by allowing the space craft to spin around as it would if it were really traveling in space. So in addition to a rocket engine that can propel the space craft forward, the ship will have thrusters on the front and back that can provide torque to spin the ship either the clockwise or counter-clockwise direction. 
+
+<p><b>Step 0.</b> For convenience I have supplied you with an "old" version of the planetoids game so you can play it and remember the feel of the game <b>without</b> the craft spinning around like mad. Download <a href="torque_v0/torque.pde">torque.pde</a> and <a href="torque_v0/functions.pde">functions.pde</a>. Create a folder called <code>torque</code> and then double click <code>torque.pde</code> so that the code runs using the <a href="lab0/hello_world_code.png">processing interface</a>. The game should <a href="torque_v0/torque.html">behave like this</a>. This version is similar to the <a href="planetoids2d/planetoids.html">earlier planetoids game</a> except the name is changed and it actually has planetoids. There are also some new variables that we will use later.
+
+<p><b>Step 1. Think about thrusters and spin (no coding needed in this step).</b> 
+
+<p>Imagine that these thrusters work through clever engineering that diverts the thrust of the main engine so that half of this thrust goes to the front thruster and the other half goes to thruster at the back of the ship.
+
+<center>
+<p><img width=796 height=360 src="planetoids_torque.png">
+</center>
+
+<p>We can figure out the net torque on the ship by assuming that the center of mass is at the center of the ship (half-way from either end).
+
+<p>For counter-clockwise torque:
+
+$$\tau_{\rm net} = \sum_i \tau_i = +\left( \frac{F_{\rm thrust}}{2} \right) \cdot \left(\frac{L_{\rm ship}}{2}\right) + \left( \frac{F_{\rm thrust}}{2} \right) \cdot \left(\frac{L_{\rm ship}}{2}\right) = \frac{F_{\rm thrust} L_{\rm ship}}{2} $$
+
+<p>For clockwise torque:
+
+$$\tau_{\rm net} = \sum_i \tau_i = -\left( \frac{F_{\rm thrust}}{2} \right) \cdot \left(\frac{L_{\rm ship}}{2}\right) - \left( \frac{F_{\rm thrust}}{2} \right) \cdot \left(\frac{L_{\rm ship}}{2}\right) = -\frac{F_{\rm thrust} L_{\rm ship}}{2} $$
+
+<p>There are no other sources of torque in the planetoids game. This means that we can use the equations above to figure out the angular acceleration ($\alpha$).
+
+<p>Angular acceleration:
+
+$$\alpha = \frac{\tau_{\rm net}}{I}$$
+
+<p>where $I$ is the moment of inertia (sometimes I call this the rotational inertia). We will talk about what to use for the moment of inertia later.
+
+<p>From the angular acceleration ($\alpha$) we can figure out the angular speed ($\omega$):
+
+$$\omega_f = \omega_i + \alpha \cdot \Delta t$$
+
+<p>Finally, from the angular speed ($\omega$) we can figure out the angle that the ship is pointing:
+
+$$\theta_f = \theta_i + \omega \cdot \Delta t   \label{eq:omega} $$
+
+<p>In what follows we will turn these equations into code.
+
+<p><b>Step 2. Make changes to the code so that the ship can spin around.</b> 
+
+<p>You will be given the code but it is up to you to figure out the right place in <a href="torque_v0/torque.pde">torque.pde</a> to put it.
+
+<p>First, comment out the lines in <a href="torque_v0/torque.pde">torque.pde</a> that change <code>theta</code> using <code>//</code>
+
+<pre>
+if (key == CODED && keyCode == LEFT) {
+//  theta += 0.05;
+} else if (key == CODED && keyCode == RIGHT) {
+//  theta += -0.05;
+} else if (key == CODED &&  keyCode == UP ) {
+</pre>
+
+<p>Next add code so that pressing the left arrow produces a positive angular acceleration like this:
+
+<pre>
+ang_accel = torque_thrusters/Iship;
+</pre>
+
+<p>and pressing the right arrow produces a negative angular acceleration like this:
+
+<pre>
+ang_accel = -torque_thrusters/Iship;
+</pre>
+
+<p>Now use this angular acceleration to change the angular speed (<code>omega</code>) as in Eq. $\ref{eq:omega}$ by adding code like this:
+
+<pre>
+omega = omega + ang_accel*dt;
+</pre>
+
+<p>In the code above, notice that the <code>omega</code> on the right side is the old <code>omega</code> value ($\theta_i$) and the <code>omega</code> on the left is the new value of <code>omega</code> (which is $\theta_f$).
+
+<p>Finally, add an equation so that <code>theta</code> is determined from the initial angle ($\theta_i$) and the angular speed ($\omega$).
+
+<pre>
+theta = theta + omega*dt;
+</pre>
+
+<p>In the above I have used the same trick where <code>theta</code> on the right side is the old value ($\theta_i$) and <code>theta</code> on the left side is the new value ($\theta_f$).
+
+<p><mark>Your program should <b>not</b> work yet</mark> because you haven't specified the torque or the moment of inertia yet. If you run the code the ship will only be able to move in the forward direction and not change direction at all.
+
+<p><b>Step 3. Specify the torque and moment of inertia for the ship.</b>
+
+<p>Near the beginning of <a href="torque_v0/torque.pde">torque.pde</a> and shortly before void setup() there are four new variables. Here they are:
+
+<pre>
+float ang_accel;
+float Iship;
+float Lship;
+float torque_thrusters;
+</pre>
+
+<p>Currently, these variables aren't used for anything but you are about to change that. Follow the syntax of other variables like Fship, mass and dt.
+
+<p>Set <code>Lship</code> equal to 100. 
+
+<p>Consider the comments on torque in <b>Step. 1</b> and modify torque_thrusters like this:
+
+<pre>
+float torque_thrusters = Fthrust*Lship/2;
+</pre>
+
+<p>Does the line above make sense to you? Why is there a factor of 2? If not see <b>Step 1</b>.
+
+<p>Now consider the variable Iship, which is the moment of interita for the ship. Look up the formula for the moment of inertia of a rod of length $L_{\rm ship}$. Follow the syntax of other variables and use this formula to determine <code>Iship</code>. <b>Before you do this read through these hints:</b>
+
+<p><mark>Hint #1: use a decimal instead of a fraction in the formula for <code>Iship</code>.</mark>  <-- Very important!
+
+<p>Hint #2: use <code>Lship*Lship</code> instead of <code>Lship^2</code>. 
+
+<p>Hint #3: Remember that in the code the mass of the ship is just the variable <code>mass</code>. 
+
+
+<p>If you modify all these lines of code in the right way you should get <a href="torque_v1/torque.html">this behavior</a>
+
+<p><b>Step 4. Add a timer and see how long you can survive.</b>
+
+<p>Right after <code>display();</code>, add this line:
+
+<pre>
+t += dt;
+text("time = ",0.9*width,0.9*height);
+text(t,0.95*width,0.9*height);
+</pre>
+
+<p>If successful your code <a href="torque_v2/torque.html">should behave like this</a>
+
+<p><b>Step 5. What happens when you change <code>Lship</code>, <code>mass</code> and <code>Fthrust</code>?</b>
+
+<p>Experiment with different values of <code>Lship</code>, <code>mass</code> and <code>Fthrusters</code>.  In what you turn in for the lab, comment on the effect of changing each of these variables (make one variable larger and try the game, then change another variable, etc.) What do you think are the best values to use for surviving the longest in the game? Add comments to the end of your torque.pde code or in the comments in the dropbox submission.
+
+
+<p><b>Extra credit: Add a projectile to the game</b> 
+
+<p><a href="planetoids.html">Option #3 In the original planetoids programming lab</a> was to add a projectile to the ship. This projectile will travel at constant speed in whatever direction the ship is pointing when you press the spacebar. Either re-use the code you used to add a projectile to the earlier lab or develop it for the first time here. In what you turn in for this lab, indicate whether you reused old code or developed the projectile code for the first time.
+
+<p><b>Bonus Points:</b> If the projectile hits an planetoid, the planetoid should shrink in size or split in two.
+
+<p><h3>Share your program!</H3>
+
+<p>If you want to share your program with a friend, send them three files: Your torque.pde, a copy of functions.pde and <b>right-click</b> and download the file <a href="torque_v0/torque.html">torque.html</a>. <b>As long as these three files are in the same folder on your or someone else's computer you should be able to double click on torque.html and play the game on a web browser.</b> You <b>don't</b> need to install the processing interactive environment to get this to work.
+
+<p>If this seems overly complicated the other way you can share your program is by clicking "Create sketch" at <a href="http://openprocessing.org">openprocessing.org</a>. Upload your code, set up an account (for free!) and then give your friends a link to the sketch.

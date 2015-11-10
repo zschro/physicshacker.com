@@ -1,0 +1,139 @@
+<HTML>
+
+<H1>Introduction to the processing.org programming framework</H1>
+
+<p>A group of programmers came together to create a programming language that is as simple as possible while allowing users to take advantage of all of the interactivity and media features that we love to use on the internet. This programming framework is <a href="http://processing.org/">processing.org</a>
+
+<p><H3>Lesson #1. The draw function</H3>
+
+<p>All the action happens in the "draw" function. Below is a Hello World! example using processing.js:
+
+<pre>
+void draw () {
+
+fill(0);
+textSize(40);
+text("Hello World!",width/2,height/2);
+
+display();
+
+}
+</pre>
+
+
+<p>See what this code does by clicking <a href="hello/hello.html">hello.html</a>
+
+<p>As you can see, the code writes "Hello World!" in the middle of the screen. The textSize() function sets the font size and fill(0) makes the text solid black.
+
+<p>If you are familiar with C/C++ the draw function is very similar to the main function except that draw() is run over and over again. In this "Hello World!" example, the words "Hello World!" are being drawn 60 times per second on the screen and the draw() function is run each time. This is definitely overkill if all you want to do is write text on the screen, but it makes for a fun platform for creating interactive games.
+
+<p><H3>Lesson #2: The Processing Development Environment (PDE)</H3>
+
+<p>The <a href="https://processing.org/download/?processing">program you installed earlier</a> is the Processing Development Environment (PDE). For this reason many of the files we will work with will have .pde extensions.
+
+<p>Once you have the program installed, create a folder on your desktop called hello
+
+<p>Download <a href="hello/hello.pde">hello.pde</a> and <a href="hello/functions.pde">functions.pde</a> You can also download these files from <a href="hello/">this link</a>
+
+<p>Move/drag/copy <a href="hello/hello.pde">hello.pde</a> and <a href="hello/functions.pde">functions.pde</a> into the hello folder. <b>Open up this folder and double click on hello.pde to open up this file in the Processing Development Environment.</b>
+
+<p>Your screen should now look something like this:
+
+<p><img src="hello_world_code.png">
+
+<p>You can run the code simply by pressing the <img src="https://processing.org/reference/environment/images/play.gif"> button and stop the code by pressing the <img src="https://processing.org/reference/environment/images/stop.gif"> button.
+
+<p>If you are curious, you can get much more info on the <a href="https://processing.org/reference/environment/">Processing Development Environment at this link</a>. Please note that we will only use "Java" mode as shown in the upper right hand corner of the screen in the image above.
+
+<p><H3>Lesson #3: Put semicolons after every line, and close every parenthesis</H3>
+
+<p>Notice that in the code used in Lessons 1 & 2, there is a semicolon after every line and every parenthesis is closed. <b>If you do not put a semicolon after every line, and close every parenthesis the code will usually fail.</b>
+
+<p>For example <b>consider this very bad example:</b>
+
+<pre>
+void draw () {
+    
+    fill(0)
+    textSize(40)
+    text("Hello World!",width/2,height/2)
+
+    display(
+}
+</pre>
+
+<p>Confirm that this program fails by taking out some of the semicolons and parenthesis, save the program and then click <img src="https://processing.org/reference/environment/images/play.gif"> to see what happens and what error messages you get.
+
+<p>You should see something like this:
+
+<p><img src="semi_colon_error.png">
+
+<p>The key thing to see in the above is the friendly error message: "Syntax error, maybe a missing semicolon?" at the bottom and the yellow-highlighted text which shows approximately where it goes. Sometimes the semi-colon will go in the line shortly <b>before</b> the line that is highlighted, which is the case here. The first problem to fix is to add a semicolon after fill(0)
+
+<p>By the way, If the above code was embedded in a web browser you would just get a white screen, as you can see from clicking <a href="hello_fail/hello_fail.html">hello_fail.html</a>
+
+<p><H3>Lesson #3: //This is a comment</H3>
+
+<p>You can add comments to the code as long as you put // at the beginning of the line, for example:
+
+<pre>
+// The draw function is run many times
+void draw () {
+
+// The fill function makes the text solid black
+fill(0);
+
+// This determines the font size
+textSize(40);
+
+text("Hello World!",width/2,height/2);
+
+// Now run any other graphics
+display();
+
+}
+</pre>
+
+<p>Confirm that this code works just fine by adding comments to your code, saving the program and then click <img src="https://processing.org/reference/environment/images/play.gif"> to make sure you can still see the "Hello World!"
+
+<p>If this code were embedded into a webpage it would work equally well, as you can see from clicking <a href="hello_comments/hello_comments.html">hello_comments.html</a>
+
+<p><H3>Lesson #4: Initialize variables with float</H3>
+
+<p>You can create your own variables using "float". Consider this example:
+
+<pre>
+void draw () {
+
+fill(0);
+
+textSize(40);
+
+float x_hello=width/2;
+float y_hello=height/2;
+
+text("Hello World!",x_hello,y_hello);
+
+display();
+
+}
+</pre>
+
+<p><p>Notice that this code works exactly the same as befreo by making these changes, clicking save and then pressing <img src="https://processing.org/reference/environment/images/play.gif">
+
+<p>Here is the embeded version: <a href="hello_var/hello_var.html">hello_var.html</a>
+
+<p><H3>Lesson #5: The file functions.pde</H3>
+
+<p>To make things simpler for my students, I will put the important code in files like <a href="hello/hello.pse">hello.pde</a>, or <a href="../planetoids1d_v1/planetoids.pde">planetoids.pde</a> or <a href="../lunardescent_v1/lunardescent.pde">lunardescent.pde</a>, etc. and I will put as much of the mundane parts of the code into a file called <a href="hello/functions.pde">functions.pde</a>. 
+
+<p><b>Click the tab that says "functions" in the processing environment to see what is there. This will be just to the right of the tab that says "hello".</b>
+
+<p><img width=505 height=288 src="click_here_functions.png">
+
+<p>You don't need to understand what goes into functions.pde. Just remember that the file exists and you'll need to have it around in order for things to work. In the programming exercises that are to come, the functions.pde files will be much more complicated than the "Hello World!" example. This helps us create interesting programs without overloading you with lines and lines of code.
+
+<H1>Done!</H1>
+
+
+</HTML>

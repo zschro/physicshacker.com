@@ -1,0 +1,145 @@
+<HTML>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<H1>Part 2: Lunar Descent</H1>
+
+<p>If you have finished tinkering with the <a href="index.html">Planetoids lab</a> you can continue with this lab where <b>we will now add gravity to the game!</b> You have a little ship that you must fly around and land safely on the moon. If you approach the landing too fast you will crash the ship.
+
+<p>You will need to bring your laptop to the lab or use one of the mac computers in Morril 285. Unfortunately, tablets will probably not work unless you have an external keyboard.
+
+<p>This example will use a programming language that is practically indistinguishable from C and C++ programming. (Note: If you are familiar with C or C++ the main difference you will see is that there is no main() function and instead the draw() function serves this role.)
+
+<p>The code is designed to solve the kinematic equations relevant to this case. 
+
+$$\sum F_{\rm{net},x} = F_{\rm thrust} \cos \theta = m \, a_x$$
+
+$$\sum F_{\rm{net},y} = -F_{\rm thrust} \sin \theta + m g = m \, a_y$$
+
+$$ \Delta v_x = a_x \Delta t$$
+
+$$ \Delta v_y = a_y \Delta t$$
+
+$$ v_x = v_{x0} + \Delta v_x$$
+
+$$ v_y = v_{y0} + \Delta v_y$$
+
+$$ x = x_0 + v_x \cdot \Delta t $$
+
+$$ y = y_0 + v_y \cdot \Delta t $$
+
+<p>The computer program we will work with here computes these equations over and over again, updating $v_x$, $v_y$, $x$ and $y$ depending on whether the thrust is turned on or off. If the thrust is turned off then $a_x = 0$ and $\Delta v_x = 0$ and the ship just continues with the same $v_x$ velocity. With the thrust off the $v_y$ velocity will continue to change with time due to gravity, $\Delta v_y = g \, \Delta t$. 
+
+
+<p><H3>Step 0. Copy planetoids files</h3> 
+
+<p>Create a folder called lunardescent on your computer. We will start where the planetoids game left off. 
+
+<p>For your convenience I have taken planetoids.pde from the planetoids exercised and changed the name of the file to lunardescent.pde to provide a starting point for the programming lab today. Download both <a href="lunardescent_v0/lunardescent.pde">lunardescent.pde</a> and <a href="lunardescent_v0/functions.pde">functions.pde</a> and place them both in the folder called lunardescent.
+
+<p>Now go into the lunardescent folder and double click on the lunardescent file to see if it works. The Processing Development Environment should open up and the program should behave exactly like the <a href="lunardescent_v0/lunardescent.html">planetoids game from the previous exercise</a>. 
+
+<p><H3>Step 1. Add gravity to planetoids</h3> 
+
+<p>Edit the beginning of lunardescent.pde to add the gravitational constant for the moon. The moon's gravity is 1/6th of the earth's, so g = 9.8/6 = 1.63 m/s<sup>2</sup>
+
+<p>Add this line to near the beginning of lunardescent.pde
+
+<pre>
+float g = 1.63;
+</pre>
+
+<p>Now, close to the very end of lunardescent.pde and right <b>before</b> the <code>display();</code> function, add this line:
+
+<pre>
+deltaVy += g*dt;
+</pre>
+
+<p>Note that while we normally have gravity pointing in the $-y$ direction, the visualization framework we are using defines down as positive, which is what we'll have to live with. This is why there is <b>no</b> minus sign in the line of code you just added to lunardescent.pde
+
+<p>You've added gravity to our simple planetoids game! Now run the program by clicking <img src="https://processing.org/reference/environment/images/play.gif">. The program should <a href="lunardescent_v1/lunardescent.html">behave like this</a>.
+
+<p><h3>Step 2. Add the Game Over!</H3>
+
+<p>Edit lunardescent.pde so that it's game over if the ship falls through the bottom of the page. Since down is positive, this happens if the y value becomes larger than the height of the screen.
+
+<p>In lunardescent.pde right <b>after</b> display(); add this line:
+
+<pre>
+  if (y > height) {
+  text("Game Over!",width/2,height/2);
+  noLoop();
+  }
+</pre>
+
+<p>Great, now there is a way to lose the game! The program should now <a href="lunardescent_v2/lunardescent.html">behave like this</a>.
+
+<p><H3>Step 3. Add a way to win the game!</H3>
+
+<p>We need to add a way for the ship to land on the surface of the moon. 
+
+<p>Add this code right after the display(); function to draw a line at the bottom of the page:
+
+<pre>
+line(0,height,width,height);
+</pre>
+
+<p>If you play the game now there should be a black line on the bottom of the screen. You should test it to see if this worked. 
+
+<p>Now we need a way for the ship to sit in the surface of the moon. In real life, the surface of the moon would provide a normal force to hold up the ship. We could try to code up the normal force, but a simpler thing to do would be to make it so that if the ship gets <b>very</b> close to the bottom then the acceleration and velocity will be zero in both the x and y direction. The ship will just sit there forever.
+
+<p>Add these line right <b>before</b> the game over in draw()
+
+<pre>
+ if ( abs(y - 0.97*height)  < 0.1) {
+  deltaVx = 0;
+  deltaVy = 0;
+  vx = 0;
+  vy = 0;
+  theta = PI/2;
+  }
+</pre>
+
+<p>Note that the accelerations are set to zero, the velocities are set to zero and the angle of the rocket points straight up.
+
+<p>If you've coded up everything correctly, the end result should <a href="lunardescent_v3/lunardescent.html">behave like this</a>.
+
+
+<p><H3>Step 4. Customize the game!</H3>
+
+<p>There are a number of different options to customize the game. You can change the initial direction of the ship from horizontal to vertical by changing a line in lunardescent.pde. 
+
+<p>In lunardescent.pde change this line
+
+<pre>
+float theta = 0; 
+</pre>
+to this:
+<pre>
+float theta = PI/2;
+</pre>
+
+
+<p>You may also want to have the ship start out higher up so it has further to fall. You can do this by changing initial y position in the <code>setup()</code> function. Change this from 
+<pre>
+y = height/2; 
+</pre>
+to
+<pre>
+y = 0;
+</pre>
+
+<p>There are plenty of other ways to modify the game. Maybe have a limited amount of fuel, or a limited amount of time. Perhaps add mountains. Projectiles? Enable reverse thrusters? Perhaps display the numerical value of the velocity and height on screen. Something else?
+
+
+<p><h3>Share your program!</H3>
+
+<p>If you want to share your program with a friend, send them three files: Your lunardescent.pde, a copy of functions.pde and <b>right-click</b> and download the file <a href="lunardescent_v0/lunardescent.html">lunardescent.html</a>. <b>As long as these three files are in the same folder on your or someone else's computer you should be able to double click on lunardescent.html and play the game on a web browser.</b> You <b>don't</b> need to install the processing interactive environment to get this to work.
+
+<p>If this seems overly complicated the other way you can share your program is by clicking "Create sketch" at <a href="http://openprocessing.org">openprocessing.org</a>. Upload your code, set up an account (for free!) and then give your friends a link to the sketch.

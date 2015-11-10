@@ -1,0 +1,62 @@
+<HTML>
+<!--
+<head>
+  <script language="javascript" type="text/javascript" src="roll_p5js/box2d-html5.js"></script>
+  <script language="javascript" type="text/javascript" src="roll_p5js/box2d-helper.js"></script>
+  <script language="javascript" type="text/javascript" src="http://cdn.jsdelivr.net/p5.js/0.3.2/p5.min.js"></script>
+  <script language="javascript" type="text/javascript" src="roll_p5js/boundary.js"></script>
+  <script language="javascript" type="text/javascript" src="roll_p5js/particle.js"></script>
+  <script language="javascript" type="text/javascript" src="roll_p5js/sketch.js"></script>
+</head>
+-->
+
+<H1>Just for Fun: Realistic Physics with Box2D</H1>
+
+<p>In real life, objects typically make inelastic collisions (as opposed to elastic and perfectly inelastic collisions which are simpler). Round objects can also roll but depending on how fast the object is rolling, it may slip if the coefficient of friction isn't large enough to keep it rotating at the same rate that it travels across the ground (think: tires on snow). What if instead of a few objects we were dealing with dozens or more?
+
+<p><b>How do we solve these kinds of problems?</b> <i>Answer:</i> Use a computer! 
+
+<p>Physicists and Computer Animators use a method called <a href="https://en.wikipedia.org/wiki/Verlet_integration">Verlet integration</a>.  (Note: Verlet is pronounced "Ver-lay".) The Verlet integration method figures out the positions, velocities and the rotation of all the objects AND it includes a highly-efficient algorithm for figuring out if two objects -- round or some other shape -- are colliding. For square or polygonal shapes the "collision detection" turns out to be more tricky to program than you might think. Probably every computer-generated film you have ever seen has used Verlet integration. Computer animators sometimes talk about using <a href="https://en.wikipedia.org/wiki/Particle_system">particle systems</a>, but this is essentially the same thing as Verlet integration.
+
+<p>The most widely used Verlet integration algorithm is called <a href="http://box2d.org/">Box2D</a>. Notably this is the engine behind a number of popular games, including Angry Birds. It is also the basis of Google's <a href="http://google.github.io/liquidfun/">Liquid Fun</a> and it is similar to the libraries used in the <a href="https://unity3d.com">unity game engine</a> to include realistic physics in games you may have played.
+
+<p>Since Box2D is an open source library, the venerable Daniel Shiffman (author of <a href="http://natureofcode.com">Nature of Code</a>) devised a way to use Box2D in the processing framework (see Step 4 below). In <a href="http://natureofcode.com/book/chapter-5-physics-libraries/">Chapter 5 of the Nature of Code</a> Shiffman explains more about how Box2D works. 
+
+<p>Below is a substantially modified version of one of the examples from <a href="http://natureofcode.com/book/chapter-5-physics-libraries/">Chapter 5 of the Nature of Code</a>. The user clicks on the screen to create a surface and then you add round objects that can roll and bounce.
+
+<p><b>Screenshot:</b>
+<p><img src="roll/roll.png">
+
+
+<p><b>Interactive version (by Physics 1250 student Savva Madar):</b>
+<p><iframe width=640 height=360 src="roll_p5js/roll.html" ></iframe>
+
+<p><b>Processing code:</b>
+
+<p><b>Step 1.</b> Create a folder called <code>roll</code> and download these four files:
+
+<p><a href="roll/roll.pde">roll.pde</a>
+
+<p><a href="roll/functions.pde">functions.pde</a>
+
+<p><a href="roll/particle.pde">particle.pde</a>
+
+<p><b>Step 2.</b> Make sure the <a href="https://processing.org/download/?processing">processing interface is installed</a> if it isn't already
+
+<p><b>Step 3.</b> Double click on roll.pde to start the processing interface
+
+<p><b>Step 4.</b> Install the Box2D library. Do this by pressing <code>sketch</code> at the top, clicking <code>import library</code> and find the Box2D for Processing Library by Daniel Schiffman
+
+<p><b>Step 5.</b> Press the play button. Have fun!
+
+<p><H3>Questions/Things to Consider</H3>
+
+<p>The coefficient of kinetic friction is set by <code>coeff_friction</code>. What happens if you increase it? Is there a noticeable difference?
+
+<p>The <a href="https://en.wikipedia.org/wiki/Coefficient_of_restitution">coefficient of restitution</a> is set by <code>coeff_resititution</code>. If <code>coeff_restitution=1</code> then the collisions are elastic. If <code>coeff_restitution=0</code> then the collisions are (almost) perfectly inelastic. I say almost because the objects do not actually stick together. Experiment with the coefficient of restitution and see if you can notice a difference!
+
+<p>Create a bowl shape like in the image above and fill it up with round objects. Does it start to behave like a liquid? It should! Liquids are substances there is very little space between atoms but the atoms can still move past each other. You can decrease the size of the objects to make it even more liquid-like. Also check out Goggle's <a href="http://google.github.io/liquidfun/">Liquid fun</a> which is also based on Box2D.
+
+
+
+</html>

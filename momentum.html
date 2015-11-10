@@ -1,0 +1,153 @@
+<HTML>
+
+<head>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "all" } }
+});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<script src="http://www.processing.org/javascript/processing.js" type="text/javascript"></script> 
+<script src="http://www.processing.org/javascript/site.js" type="text/javascript"></script>
+</head>
+
+<H1>Part 4: Planetoids with momentum!</H1>
+
+<p>In a typical college physics course you will at some point encounter the idea of conservation of momentum. Momentum conservation is very important! In situations where two objects collide, we often don't know the force or acceleration as a function of time, but we do know the initial velocities. If we know the type of collision that occurs, it turns out that the initial velocities and the masses of the objects are all we need to figure out the final velocities. 
+
+<p><b>Step 0. Read about momentum!</b> There are three types of collisions: elastic collisions, inelastic collisions and perfectly inelastic collisions. This programming lab focuses on perfectly inelastic collisions, which is the mathematically simplest kind of collision. But for completeness let's review all three different types of collisions and for simplicity let's assume 1-Dimensional collisions (instead of 2D or 3D).
+
+<p><b>Elastic collisions in 1-Dimension: Kinetic Energy is Conserved!</b>
+
+<center>
+<p><canvas data-processing-sources="elastic.pde">
+</canvas>
+</center>
+
+$$m_1 v_{1i} + m_2 v_{2i} = m_1 v_{1f} + m_2 v_{2f}$$
+
+$$\frac{1}{2} m_1 v_{1i}^2 + \frac{1}{2} m_2 v_{2i}^2 = \frac{1}{2} m_1 v_{1f}^2 + \frac{1}{2} m_2 v_{2f}^2$$
+
+<p>Comments: If you know the masses of both objects ($m_1$ and $m_2$) and if you know the initial velocities of both objects ($v_{1i}$ and $v_{2i}$) then you really can figure out the final velocities ($v_{1f}$ and $v_{2f}$) from the conservation of momentum equation (Eq. 1) and the conservation of energy equation (Eq. 2). It involves a frustrating amount of algebra to calculate $v_{1f}$ and $v_{2f}$, but if you want to be overly-prepared for quizzes and tests, it would be a good idea to be able to know how to do this.
+
+<p><b>Inelastic collisions in 1-Dimention: Kinetic Energy is Definitely Not Conservered!</b>
+
+<center>
+<p><canvas data-processing-sources="inelastic.pde">
+</canvas>
+</center>
+
+<p>The idea here is that there was a collision and a significant amount of energy was lost in the form of heat or sound. Therefore the sum of the initial kinetic energies is <b>more</b> than the sum of the final kinetic energies.
+
+$$m_1 v_{1i} + m_2 v_{2i} = m_1 v_{1f} + m_2 v_{2f}$$
+
+$$\frac{1}{2} m_1 v_{1i}^2 + \frac{1}{2} m_2 v_{2i}^2 > \frac{1}{2} m_1 v_{1f}^2 + \frac{1}{2} m_2 v_{2f}^2$$
+
+<p>Comments: If all you know is the masses ($m_1$ and $m_2$) and the initial velocities ($v_{1i}$ and $v_{2i}$) then you actually <b>can't</b> figure out $v_{1f}$ and $v_{2f}$ without more information. It turns out that the energy conservation equation (Eq. 4) is useless. It's not even an equation, it's an inequality! In a situation like this you would need someone to tell you what $v_{1f}$ is so you can figure out $v_{2f}$ from the conservation of momentum equation (Eq. 3). 
+
+
+<p><b>Perfectly inelastic collisions in 1-Dimension: Kinetic Energy is Definitely Not Conserved but the objects stick together!</b>
+
+<p>Perfectly inelastic collisions is where two objects <b>collide and stick</b> to each other so that they travel together afterwards. Mathematically, this means that $v_{1f} = v_{2f} = v_f$.
+
+<center>
+<p><canvas data-processing-sources="perfectlyinelastic.pde">
+</canvas>
+</center>
+
+$$m_1 v_{1i} + m_2 v_{2i} = m_1 v_{1f} + m_2 v_{2f} = (m_1 + m_2) v_f $$
+
+$$\frac{1}{2} m_1 v_{1i}^2 + \frac{1}{2} m_2 v_{2i}^2 > \frac{1}{2} m_1 v_{1f}^2 + \frac{1}{2} m_2 v_{2f}^2$$
+
+<p>Comments: Once again, the energy conservation equation (Eq. 6) is useless and we just use the conservation of momentum equation (Eq. 5) to figure out the final velocity of the combined (a.k.a. stuck together) object.
+
+<p><b>Step 1. Go Back to the</b> <a href="momentum_v0/momentum.html">1-Dimensional Planetoids code</a>. For convenience this code has been renamed <a href="momentum_v0/momentum.pde">momentum.pde</a> (instead of planetoids.pde) and some minor modifications have been made to both <a href="momentum_v0/functions.pde">functions.pde</a> and <a href="momentum_v0/momentum.pde">momentum.pde</a> so please just download these codes again from the links just given. Remember to create a folder called "momentum" and put the codes in that folder so that the processing environment doesn't complain.
+
+<p><b>Step 2. Look at momentum.pde and notice the new variables</b>. If you look at <a href="momentum_v0/momentum.pde">momentum.pde</a> you will notice that there are some new variables that weren't in the original <a href="planetoids1d_v1/planetoids.pde">planetoids.pde</a>. These variables specify the position and speed of the "blob" that we will add to the game. The goal is to make this a sticky blob so that the ship and the blob stick together when they collide.
+
+<p><b>Step 3. Decide on a mass and radius for your blob.</b> The default values are <code>mass_blob = 10.0</code> and <code>radius_blob = 50</code>, but go ahead and do your own thing, just don't make the blob any smaller than about 5 units in radius or larger than the size of the screen (about 500 units across).
+
+<p><b>Step 4. Decide on an initial position for your blob.</b> The default values are <code>x_blob = 375</code> and <code>y_blob = 250</code>. Use <code>y_blob=250</code> but do your own thing and choose whatever you'd like for <code>x_blob</code> as long as the blob doesn't start on top of the ship. 
+
+<p><b>Step 5. Draw the blob!</b> Right after the <code>display()</code> function, use the <code>ellipse</code> function to draw a circle like this:
+
+<pre>
+ellipse(x_blob,y_blob,radius_blob,radius_blob);
+</pre>
+
+<p>At this point your program should behave <a href="momentum_v1/momentum.html">like this</a>.
+
+<p><b>Step 6. Make sure there's a way for the blob to move!</b> In other words make sure there is something in the "Update location" section that allows the position of the blob to move with a constant velocity. Test it out by setting <code>vx_blob=10</code> to see that it works, then set <code>vx_blob=0</code> so that the blob is initially at rest. <b>Hint:</b> Mimic the code that allows the rocket to move.
+
+<p><b>Step 7. Make it sticky.</b> The purpose of this programming lab is to allow the rocket to have a perfectly inelastic (a.k.a. sticky) collision with the blob. For a computer, a collision is something that happens when the position of the rocket is very close to the position of the blob. We need to add an <code>if</code> statement after <code>ellipse</code> so that something special happens when this occurs. In the end we will add something like this to the program:
+
+<pre>
+if (some number < some other number) {
+ // do something special
+ text("Collision!",0.4*width,0.25*height);
+ noLoop(); // Ends the program 
+}
+</pre>
+
+<p>The thing inside the <code>if()</code> is called a "conditional statement". In 1-Dimension what we really want mathematically is this:
+
+$$\Delta x_{\rm blob} = x - x_{\rm blob}$$
+
+$$|\Delta x_{\rm blob}|  < R_{\rm blob}$$
+
+<p>Note that the vertical lines in Eq. 8 are an absolute value. Use the variables we've been using (and create new ones if you need to) in order to convert this math into code. If you do it right your program should behave <a href="momentum_v2/momentum.html">like this</a>. <b>Hint:</b> Use <code>abs()</code> for the absolute value. 
+
+<p><b>Step 8.</b> Just for fun, remove the <code>noLoop();</code> and add <code>vx_blob = vx;</code> and see what happens. Why isn't this a physically accurate collision between the ship and the blob?
+
+<p><b>Step 9. Add physics.</b> Let's consider again Eq. 5. 
+
+$$m_1 v_{1i} + m_2 v_{2i} = (m_1 + m_2) v_f $$
+
+<p>Remember that $v_f$ is the speed of both objects after they stick together. Solve this equation for $v_f$. Explain why the following code should be placed between the curly brackets <code>{}</code> of the <code>if</code> statement:
+
+<p><code>vx_blob = (mass*vx + mass_blob*vx_blob)/(mass + mass_blob);</code>
+
+<p>Be sure to explain why <code>vx_blob</code> appears on both sides of the equals sign!
+
+<p>Don't forget that the velocity of the rocket needs to change because of the collision? <b>What code should we add after this one to make sure that the rocket changes to the correct velocity?</b> If you do this step correctly, your program should behave <a href="momentum_v3/momentum.html">like this</a>.
+
+<p><b>Step 10. Test your program!</b> Give the rocket an initial speed towards the blob by setting <code>vx</code> to some positive velocity near the beginning of the program. Then add some code to write the velocity of the blob to the screen:
+
+<pre>
+  text("vx_blob = ",0.2*width,0.25*height);
+  text(vx_blob,0.25*width,0.3*height);
+</pre>
+
+<p>If you make these changes your program will behave <a href="momentum_v4/momentum.html">like this</a>. You will notice that the velocity of the blob goes from zero before impact to about 11.538 after impact if the initial velocity of the ship is set to 50 (default value) and the mass of the ship is 3.0 (default value) and the mass of the blob is 10.0 (default value). If the rocket is object 1 and the blob is object 2, this $v_f =$11.538 result makes sense because, according to Eq. 9,
+
+$$v_f = \frac{m_1 v_{1i} + m_2 v_{2i}}{m_1 + m_2} = \frac{3.0 \cdot 50 + 10.0 \cdot 0}{3.0 + 10.0} = 11.538$$
+
+<p><mark>Choose a different set of velocities and masses than the default values, run your program to see what the velocity of the blob is after the collision and confirm that your program gives you the same result as the formula above for your numbers. <b>Write the values you chose in the comments to your code or the comments in your code submission!</b></mark>.
+
+<p><b>Step 11. Make it 2-Dimensional!</b> In 2-Dimensions, we end up with two equations for momentum conservation instead of just one. This is true of all three types of collisions, but the equations below will highlight what this looks like for perfectly inelastic collisions. In this case we have an equation for conservation of momentum in the x-direction that looks like this:
+
+$$m_1 v_{1xi} + m_2 v_{2xi} = (m_1 + m_2) v_{xf} $$
+
+<p>and we have an equation for conservation of momentum in the y-direction that looks about the same,
+
+$$m_1 v_{1yi} + m_2 v_{2yi} = (m_1 + m_2) v_{yf} $$
+
+<p>Go through the program and modify it to allow the rocket to move in two dimensions. (Feel free to look over the earlier <a href="planetoids.html">planetoids guide</a> if needed.) Then modify the code allow the blob to move in two dimensions. Then modify the code where the collision happens to make sure the collision is correct in 2-D (Hint: use the <a href="https://en.wikipedia.org/wiki/Pythagorean_theorem">pythagorean theorem</a> to determine the distance between the rocket and the blob.) Finally, just to make it fun, give the blob a random velocity near the beginning of the program using this code:
+
+<pre>
+float vx_blob = random(-20,20);
+float vy_blob = random(-20,20);
+</pre>
+
+<p>In the end your program should behave <a href="momentum_v5/momentum.html">like this</a>. 
+
+<p><b>Challenge: Customize!</b> Make some modification to the code to make the game different or more fun. Some ideas: change the type of collision to elastic (instead of perfectly inelastic). Consult the <a href="https://en.wikipedia.org/wiki/Elastic_collision">wikipedia page on elastic collisions</a> for advice. Other ideas: projectiles, more blobs, or make the blob infinitely sticky so the rocket can never get away.
+
+<p><h3>Share your program!</H3>
+
+<p>If you want to share your program with a friend, send them three files: Your momentum.pde, a copy of functions.pde and <b>right-click</b> and download the file <a href="momentum_v0/momentum.html">momentum.html</a>. <b>As long as these three files are in the same folder on your or someone else's computer you should be able to double click on momentum.html and play the game on a web browser.</b> You <b>don't</b> need to install the processing interactive environment to get this to work.
+
+<p>If this seems overly complicated the other way you can share your program is by clicking "Create sketch" at <a href="http://openprocessing.org">openprocessing.org</a>. Upload your code, set up an account (for free!) and then give your friends a link to the sketch.

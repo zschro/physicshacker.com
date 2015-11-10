@@ -1,0 +1,129 @@
+<HTML>
+
+<head>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "all" } }
+});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<script src="http://www.processing.org/javascript/processing.js" type="text/javascript"></script> 
+<script src="http://www.processing.org/javascript/site.js" type="text/javascript"></script>
+</head>
+
+
+<H1>Part 6. Planetoids with a spring!</H1>
+
+<p>Think back to the <a href="momentum.html">momentum exercise</a>. The little ship can collide with a "blob" and stick to it. Now imagine that this blob is attached to a spring. Wouldn't it be interesting if the ship could collide with the blob and then the spring would push and pull both around? This is what we will do in this exercise.
+
+<p>This spring will be attached to the blob and do the left-hand side of the screen as shown below.
+
+<p><img src="spring.png">
+
+<p><b>Step 0. Read/think about spring forces.</b> Thus far the only force we have considered is $F_{\rm thrust}$ which is a constant force in whatever direction the ship is pointing. (We also considered gravity in the <a href="lunardescent.html">lunar descent</a> exercise, but for simplicity this was treated as a constant acceleration instead of a constant force.) The force from a spring is a very different kind of force. The more the spring is compressed, the more it pushes back and the more the spring is stretched out the larger the force to try and pull it back into the rest position. The formula that corresponds to this is given here:
+
+$$F_{\rm spring} = -k (x - L_{\rm relaxed})$$
+
+<p>The idea is that if $x = L_{\rm relaxed}$ then the force is zero. When $x < L_{\rm relaxed}$ then the spring force is <i>positive</i> so that it pushes the object to a larger $x$ value. And if $x > L_{\rm relaxed}$ then the spring force is <i>negative</i> and the object is pulled to a lower $x$ value.
+
+<p>In the code you will soon develop, you should use <code>Lrelaxed</code> to represent $L_{\rm relaxed}$ and <code>Fspring</code> for $F_{\rm spring}$.
+
+<p><b>Step 1. Download a modified version of the momentum code.</b> This version will have a spring drawn on it and other minor tweaks. Right-click and download <a href="spring_v0/spring.pde">spring.pde</a> and <a href="spring_v0/functions.pde">functions.pde</a>. Create a folder named <code>spring</code> and put these codes in that folder. Then double click on <code>spring.pde</code> so that it opens in the <a href="http://processing.org/download/?processing">processing interface</a>. 
+
+<p><mark><b>Please note that this exercise will remain 1-Dimensional for simplicity! Sorry!</b></mark>
+
+<p><b>Step 2. Add the spring force! Let the blob accelerate!</b> We are going to add a spring force to the blob. If the position of the blob (<code>x_blob</code>) is not equal to the relaxed length (<code>Lrelaxed</code>) the force will cause the blob to accelerate.
+
+<p>To add the spring force, change the code in the following ways:
+
+<ul>
+<li>Make sure that the "Update velocities" section updates the velocity of both the ship <b>and</b> the blob. Create a variable called <code>deltaVx_blob</code> for this purpose.
+<li>Near the beginning of <a href="spring_v0/spring.pde">spring.pde</a> add a variable <code>k</code> for the spring constant and set it to 0.5.
+<li>Near the beginning of <a href="spring_v0/spring.pde">spring.pde</a> add a variable <code>Lrelaxed</code> for the natural length of the spring and set it to 300.
+<li>Near the beginning of <a href="spring_v0/spring.pde">spring.pde</a> add a variable <code>Fspring</code>. Don't set it to any specific value.
+<li>Somewhere before <code>display();</code> add a line of code to determine <code>Fspring</code> that depends of the position of the blob, <code>k</code> constant and the relaxed length of the spring (<code>Lrelaxed</code>)
+<li>Use $F = ma$ and $\Delta v_x = a_x \Delta t$ to calculate the change in velocity of the blob (<code>deltaVx_blob</code>)
+</ul>
+
+<p>If you are able to make all these changes your code should <a href="spring_v1/spring.html">behave like this</a>.
+
+<p><b>Step 3. Get the spring to do this! Think about the motion!</b>
+
+<p>
+<video controls loop autoplay> <source  src="spring.mp4" type="video/mp4"> </video>
+
+<p>When is the velocity the largest? When is the force the largest? When is the acceleration the largest?
+
+<p><b>Step 4. Analyze the motion!</b>
+
+<p>Let's modify the code in order to measure how long it takes for the blob to go from the relaxed position to either the fully stretched or fully compressed position and back. The easiest way to do this is to measure the amount of time it takes for the blob to return to $x = L_{\rm relaxed}$. This turns out to be trickier than it sounds. Follow the directions below. If you can think of a different way to do this, please feel free to try it out!
+
+<p><b>Step 4.a.</b> Near the beginning of <code>spring.pde</code> create a variable called <code>tcounter</code> and set it equal to zero. Somehere after <code>display();</code> add this:
+
+<pre>tcounter += dt; 
+text("counter time = ",0.7*width,0.6*height);
+text(tcounter,0.75*width,0.65*height); 
+</pre> 
+
+
+<p><b>Step 4.b.</b> Near the beginning of <code>spring.pde</code> create a variable called <code>tlasttime</code> and set it equal to zero. <i>We need to set this variable to the value of <code>tcounter</code> every time the blob moves past the relaxed position!</i>
+
+<p>Somewhere after <code>display();</code> add this:
+
+<pre>
+// if the position of the blob is near the relaxed position
+if ((abs(x_blob - Lrelaxed) < 5.0) & (tcounter > 10*dt)) {
+tlasttime = tcounter;
+tcounter = 0; //Reset the clock
+} 
+
+text("half cycle time = ",0.7*width,0.75*height);
+text(tlasttime,0.75*width,0.8*height);
+</pre>
+
+<p>The values of <code>5.0</code> and <code>10*dt</code> are somewhat arbitrary. The main thing is that when <code>x_blob</code> is close to the value of <code>Lrelaxed</code> and <code>tcounter</code> is much larger than zero, then the value of <code>tcounter</code> gets copied to <code>tlasttime</code>. Then the "clock" gets reset to zero with <code>tcounter = 0</code>. 
+
+<p>If you modify your code correctly your program should <a href="spring_v2/spring.html">behave like this</a>
+
+<p><b>Step 4.c. What is the typical "half cycle time" when the ship is attached to the blob?</b> 
+
+<p>Fly the ship into the blob and then without firing the thrusters, watch the ship move back and forth a few times from the force of the spring. Write down what the typical "half cycle time" is.
+
+<p>Now fire the thrusters to increase the amplitude of the oscillations. Is the half cycle time the same or different? Make sure you watch the oscillations for a few cycles before you decide. Does the answer surprise you?
+
+<p><b>Step 5. Calculate the expected "half cycle time" from what you know about oscillating springs</b> 
+
+<p>What is the "half cycle time" equivalent to? The angular speed? frequency? period? Use what you know about the period of an object attached to a frictionless spring to calculate what you would expect the "half cycle time" to be based on the mass of the objects and the spring constant. You should be able to estimate this quite accurately. <i>(Hint: the angular speed of a frictionless spring is $\omega = \sqrt{k/m}$.)</i>
+
+<p><b>(Challenge #1) Step 6. Does the "half cycle time" depend on whether the ship is attached to the blob?</b> 
+
+<p>It should be possible to fly your ship into the blob to get it oscillating and then fire your thrusters so that the ship flies away from the blob, but the blob is still oscillating. What is the "half cycle time" in this case? <b>The "half cycle time" should be slightly different when the spring is only pushing around the blob!</b>  
+
+<p><b>Step 6.a. Modify your code if nessary</b> Is this true for your program? What should you modify in your code in order to make sure this happens? <i>(Hint: add one line of code so that <code>deltaVx_blob</code> is different depending on whether the ship is stuck to the blob or not.)</i>
+
+<p>If you modify your code in the right way your program should <a href="spring_v3/spring.html">behave like this</a>
+
+<p><b>Step 6.b. Measure the "half cycle time"</b> Measure the half cycle time for both when the ship is attached to the blob and when the ship is not attached to the blob. Make sure you can explain both results for the half cycle time from your knowledge of oscillating spring systems (i.e. from Step 5)
+
+<p>Change the mass of the blob (<code>mass_blob</code>) and the mass of the ship (<code>mass</code>) and see if the "half cycle time" changes for both cases where the ship is and is not attached to the blob. Which values for the masses did you choose? Can you explain the new results for the "half cycle time"?
+
+<p><b>(Challenge #2) Step 7. Add damping to the spring system!</b>
+
+<p>Add a drag (a.k.a. damping) force to the spring system. There is more than one kind of damping force you could use, but the simplest is $F_{\rm drag} = - b v$ where $b$ is a constant.
+
+<ul>
+<li>Near the beginning of your program add a variable <code>b</code> and set it to 0.1
+<li>Modify $F_{\rm spring}$ so that it includes an extra $-bv$ term. The damping is not normally thought of as a "spring force" but this is the easiest way to add damping to the program.
+</ul>
+
+<p>Test it out! Roughly how many cycles does it take for the motion to slow to a stop? Underdamped systems go through multiple oscillations before they slow to a stop. Make <code>b</code> much larger until the damping is so large that the system slows to a stop <i>without</i> oscillating. Overdamped systems slow to a stop <i>without</i> going through multiple oscillations. What value of <code>b</code> should you use to simulate a critically damped system?
+
+
+<p><h3>Share your program!</H3>
+
+<p>If you want to share your program with a friend, send them three files: Your spring.pde, a copy of functions.pde and <b>right-click</b> and download the file <a href="spring_v0/spring.html">spring.html</a>. <b>As long as these three files are in the same folder on your or someone else's computer you should be able to double click on spring.html and play the game on a web browser.</b> You <b>don't</b> need to install the processing interactive environment to get this to work.
+
+<p>If this seems overly complicated the other way you can share your program is by clicking "Create sketch" at <a href="http://openprocessing.org">openprocessing.org</a>. Upload your code, set up an account (for free!) and then give your friends a link to the sketch.
